@@ -1,0 +1,480 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: moonlight-tv\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-08-01 15:59+0900\n"
+"PO-Revision-Date: 2023-08-01 07:04\n"
+"Last-Translator: \n"
+"Language-Team: Russian\n"
+"Language: ru_RU\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"X-Crowdin-Project: moonlight-tv\n"
+"X-Crowdin-Project-ID: 484733\n"
+"X-Crowdin-Language: ru\n"
+"X-Crowdin-File: messages.pot\n"
+"X-Crowdin-File-ID: 22613\n"
+
+#: src/app/app.c:68
+msgid "[Localized Language]"
+msgstr "Русский"
+
+#: src/app/app.c:239 src/app/ui/launcher/add.dialog.c:42
+#: src/app/ui/launcher/apps.controller.c:736
+#: src/app/ui/launcher/server.context_menu.c:89
+msgid "Cancel"
+msgstr "Отмена"
+
+#: src/app/app.c:239 src/app/ui/launcher/add.dialog.c:42
+#: src/app/ui/launcher/apps.controller.c:662
+#: src/app/ui/launcher/apps.controller.c:769
+#: src/app/ui/launcher/launcher.controller.c:461
+#: src/app/ui/launcher/pair.dialog.c:54
+#: src/app/ui/launcher/server.context_menu.c:129
+#: src/app/ui/streaming/streaming.controller.c:287
+msgid "OK"
+msgstr "ОК"
+
+#: src/app/app.c:240
+msgid "Quit Moonlight?"
+msgstr "Выйти из Moonlight?"
+
+#: src/app/app_settings.c:32
+msgid "Stereo"
+msgstr "Стерео"
+
+#: src/app/app_settings.c:33
+msgid "5.1 Surround"
+msgstr "Объёмный звук 5.1"
+
+#: src/app/app_settings.c:34
+msgid "7.1 Surround"
+msgstr "Объёмный звук 7.1"
+
+#: src/app/platform/common/i18n_common.c:6
+msgid "System Language"
+msgstr ""
+
+#: src/app/stream/connection/session_connnection.c:37
+msgid "Unstable connection."
+msgstr "Нестабильное соединение."
+
+#: src/app/ui/help/help.dialog.c:15 src/app/ui/launcher/launcher.view.c:113
+msgid "Help"
+msgstr "Помощь"
+
+#: src/app/ui/help/help.dialog.c:37
+msgid "Gamepad hotkeys"
+msgstr "Горячие клавиши геймпада"
+
+#: src/app/ui/help/help.dialog.c:39
+msgid "Remote controller keys"
+msgstr "Кнопки пульта дистанционного управления"
+
+#: src/app/ui/help/help.dialog.c:42
+msgid "Open moonlight-tv Wiki"
+msgstr "Открыть moonlight-tv Wiki"
+
+#: src/app/ui/help/help.dialog.c:44
+msgid "Open moonlight-stream Wiki"
+msgstr "Открыть moonlight-stream Wiki"
+
+#: src/app/ui/launcher/add.dialog.c:57
+msgid "IP address"
+msgstr "IP адрес"
+
+#: src/app/ui/launcher/add.dialog.c:61
+msgid "IPv4 address only"
+msgstr "Только IPv4 адрес"
+
+#: src/app/ui/launcher/add.dialog.c:80
+msgid "Failed to add computer."
+msgstr "Ошибка добавления компьютера."
+
+#: src/app/ui/launcher/add.dialog.c:155
+msgid "Failed to add computer"
+msgstr ""
+
+#: src/app/ui/launcher/apps.controller.c:140
+msgid "Wake"
+msgstr "Разбудить"
+
+#: src/app/ui/launcher/apps.controller.c:140
+#: src/app/ui/launcher/apps.controller.c:142
+msgid "Retry"
+msgstr "Повторить"
+
+#: src/app/ui/launcher/apps.controller.c:144
+msgid "Pair"
+msgstr "Подключить"
+
+#: src/app/ui/launcher/apps.controller.c:393
+msgid "Failed to load apps"
+msgstr "Ошибка загрузки приложений"
+
+#: src/app/ui/launcher/apps.controller.c:395
+#: src/app/ui/launcher/apps.controller.c:442
+msgid "Press \"Retry\" to load again.\n\n"
+"Restart your computer if error persists."
+msgstr "Нажмите \"Повторить\" чтобы попытаться загрузить снова.\n\n"
+"Перезагрузите компьютер, если проблема не устранена."
+
+#: src/app/ui/launcher/apps.controller.c:424
+msgid "Not paired"
+msgstr "Не сопряжён"
+
+#: src/app/ui/launcher/apps.controller.c:426
+msgid "Press \"Pair\", and input PIN code on your computer to pair."
+msgstr "Нажмите \"Подключить\" и введите PIN-код на Вашем компьютере для сопряжения."
+
+#: src/app/ui/launcher/apps.controller.c:440
+msgid "Host error"
+msgstr "Ошибка сервера"
+
+#: src/app/ui/launcher/apps.controller.c:458
+msgid "Offline"
+msgstr "Не в сети"
+
+#: src/app/ui/launcher/apps.controller.c:460
+msgid "Press \"Wake\" to send Wake-on-LAN packet to turn the computer on if it supports this feature, press \"Retry\" to connect again.\n\n"
+"Try restart your computer if these doesn't work."
+msgstr "Нажмите \"Разбудить\" чтобы отправить Wake-on-LAN пакет для включения компьютера если он поддерживает эту функцию, нажмите \"Повторить\" для повторного подключения.\n\n"
+"Попробуйте перезагрузить компьютер, если это не работает."
+
+#: src/app/ui/launcher/apps.controller.c:602
+msgid "Quitting game..."
+msgstr "Выходим из игры..."
+
+#: src/app/ui/launcher/apps.controller.c:663
+msgid "Unable to quit game"
+msgstr "Невозможно выйти из игры"
+
+#: src/app/ui/launcher/apps.controller.c:664
+msgid "Please make sure you are quitting with the same client."
+msgstr "Пожалуйста, убедитесь, что вы выходите с тем же клиентом."
+
+#: src/app/ui/launcher/apps.controller.c:713
+msgid "Resume streaming"
+msgstr "Возобновить трансляцию"
+
+#: src/app/ui/launcher/apps.controller.c:714
+msgid "Start streaming"
+msgstr "Начать трансляцию"
+
+#: src/app/ui/launcher/apps.controller.c:720
+msgid "Stop streaming"
+msgstr "Остановить трансляцию"
+
+#: src/app/ui/launcher/apps.controller.c:724
+msgid "Unstar"
+msgstr "Из закладок"
+
+#: src/app/ui/launcher/apps.controller.c:724
+msgid "Star"
+msgstr "В закладки"
+
+#: src/app/ui/launcher/apps.controller.c:728
+msgid "Unhide"
+msgstr ""
+
+#: src/app/ui/launcher/apps.controller.c:728
+msgid "Hide"
+msgstr ""
+
+#: src/app/ui/launcher/apps.controller.c:732
+#: src/app/ui/launcher/server.context_menu.c:75
+msgid "Info"
+msgstr "Информация"
+
+#: src/app/ui/launcher/launcher.controller.c:462
+msgid "No working decoder"
+msgstr ""
+
+#: src/app/ui/launcher/launcher.controller.c:465
+msgid "Streaming can't work without a valid decoder."
+msgstr ""
+
+#. Use list button for normal container
+#: src/app/ui/launcher/launcher.view.c:107
+msgid "Add computer"
+msgstr "Добавить компьютер"
+
+#: src/app/ui/launcher/launcher.view.c:119
+#: src/app/ui/settings/settings.view.c:31
+msgid "Settings"
+msgstr "Настройки"
+
+#: src/app/ui/launcher/launcher.view.c:125
+#: src/app/ui/settings/settings.controller.c:433
+msgid "Quit"
+msgstr "Выход"
+
+#: src/app/ui/launcher/pair.dialog.c:55
+msgid "Pairing"
+msgstr "Сопряжение"
+
+#: src/app/ui/launcher/pair.dialog.c:72
+msgid "Enter PIN code on your computer."
+msgstr "Введите PIN-код на Вашем компьютере."
+
+#: src/app/ui/launcher/server.context_menu.c:79
+msgid "Show hidden apps"
+msgstr ""
+
+#: src/app/ui/launcher/server.context_menu.c:84
+msgid "Forget"
+msgstr "Забыть"
+
+#: src/app/ui/launcher/server.context_menu.c:133
+#, c-format
+msgid "IP address: %s\n"
+"GPU: %s\n"
+"Supports 4K: %s\n"
+"Supports HDR: %s\n"
+"Host Software Version: %s\n"
+"GeForce Experience: %s"
+msgstr ""
+
+#: src/app/ui/settings/panes/about.pane.c:59
+msgid "Version"
+msgstr "Версия"
+
+#: src/app/ui/settings/panes/about.pane.c:60
+#: src/app/ui/settings/panes/decoder.pane.c:110
+msgid "Video decoder"
+msgstr "Видео декодер"
+
+#: src/app/ui/settings/panes/about.pane.c:61
+#: src/app/ui/settings/panes/decoder.pane.c:117
+msgid "Audio backend"
+msgstr "Бэкэнд аудио"
+
+#: src/app/ui/settings/panes/about.pane.c:64
+msgid "System"
+msgstr ""
+
+#: src/app/ui/settings/panes/about.pane.c:72
+msgid "Screen resolution"
+msgstr "Разрешение экрана"
+
+#: src/app/ui/settings/panes/about.pane.c:77
+msgid "Refresh rate"
+msgstr "Частота обновления"
+
+#: src/app/ui/settings/panes/basic.pane.c:89
+msgid "Resolution and FPS"
+msgstr "Разрешение и FPS"
+
+#: src/app/ui/settings/panes/basic.pane.c:140
+msgid "Video bitrate"
+msgstr "Битрейт видео"
+
+#: src/app/ui/settings/panes/basic.pane.c:156
+msgid "Fullscreen UI"
+msgstr "Полноэкранный UI"
+
+#: src/app/ui/settings/panes/basic.pane.c:167
+#: src/app/ui/settings/panes/basic.pane.c:168
+msgid "Language"
+msgstr "Язык"
+
+#: src/app/ui/settings/panes/basic.pane.c:198
+msgid "Your computer may not perform well when using this resolution and framerate."
+msgstr "Ваш компьютер может плохо работать с выбранными разрешением и частотой кадров."
+
+#: src/app/ui/settings/panes/basic.pane.c:213
+#, c-format
+msgid "Video bitrate - %d kbps"
+msgstr "Битрейт видео - %d кбит/с"
+
+#: src/app/ui/settings/panes/basic.pane.c:221
+msgid "Higher bitrate may cause performance issue, try with caution."
+msgstr "Более высокий битрейт может вызывать проблемы с производительностью."
+
+#: src/app/ui/settings/panes/decoder.pane.c:67
+#: src/app/ui/settings/panes/decoder.pane.c:68
+msgid "Auto"
+msgstr ""
+
+#: src/app/ui/settings/panes/decoder.pane.c:111
+#, c-format
+msgid "Video decoder - using %s"
+msgstr "Видео декодер - используется %s"
+
+#: src/app/ui/settings/panes/decoder.pane.c:118
+#, c-format
+msgid "Audio backend - using %s"
+msgstr "Бэкэнд аудио - используется %s"
+
+#: src/app/ui/settings/panes/decoder.pane.c:128
+msgid "Prefer H265 codec"
+msgstr "Предпочитать кодек H265"
+
+#: src/app/ui/settings/panes/decoder.pane.c:132
+msgid "H265 usually has clearer graphics, and is required for using HDR."
+msgstr "У H265 обычно более чёткая графика, и он требуется для HDR."
+
+#: src/app/ui/settings/panes/decoder.pane.c:136
+#, c-format
+msgid "%s decoder doesn't support H265 codec."
+msgstr "%s декодер не поддерживает кодек H265"
+
+#: src/app/ui/settings/panes/decoder.pane.c:140
+msgid "HDR (experimental)"
+msgstr "HDR (экспериментально)"
+
+#: src/app/ui/settings/panes/decoder.pane.c:144
+#, c-format
+msgid "%s decoder doesn't support HDR."
+msgstr "%s декодер не поддерживает HDR."
+
+#: src/app/ui/settings/panes/decoder.pane.c:148
+#: src/app/ui/settings/panes/decoder.pane.c:196
+msgid "H265 is required to use HDR."
+msgstr "H265 требуется для использования HDR."
+
+#: src/app/ui/settings/panes/decoder.pane.c:151
+#: src/app/ui/settings/panes/decoder.pane.c:199
+msgid "HDR is only supported on certain games and when connecting to supported monitor."
+msgstr "HDR поддеживается только несколькими играми и только если подключен поддерживающий HDR монитор."
+
+#: src/app/ui/settings/panes/decoder.pane.c:154
+msgid "Learn more about HDR feature."
+msgstr "Узнать больше о HDR"
+
+#: src/app/ui/settings/panes/decoder.pane.c:160
+msgid "Sound Channels (Experimental)"
+msgstr "Звуковые каналы (Экспериментально)"
+
+#: src/app/ui/settings/panes/host.pane.c:26
+msgid "Optimize game settings for streaming"
+msgstr "Оптимизировать настройки игры для трансляции"
+
+#: src/app/ui/settings/panes/host.pane.c:27
+msgid "Change in-game settings to optimize for streaming. Resolution will be limited to 720p, 1080p or 4K. Framerate will be also limited to 30/60 FPS."
+msgstr "Изменить настройки игры для оптимизации под трансляцию. Разрешение будет ограничено до 720p, 1080p или 4K. Частота кадров тоже будет ограничена до 30/60 FPS."
+
+#: src/app/ui/settings/panes/host.pane.c:30
+msgid "Mute computer while streaming"
+msgstr "Приглушить компьютер во время трансляции"
+
+#: src/app/ui/settings/panes/input.pane.c:39
+msgid "View-only mode"
+msgstr "Режим просмотра"
+
+#: src/app/ui/settings/panes/input.pane.c:40
+msgid "Don't send mouse, keyboard or gamepad input to host computer."
+msgstr "Не отправлять ввод мышки, клавиатуры или геймпада на компьютер."
+
+#: src/app/ui/settings/panes/input.pane.c:42
+msgid "Mouse"
+msgstr "Мышь"
+
+#: src/app/ui/settings/panes/input.pane.c:45
+msgid "Use mouse hardware"
+msgstr "Использовать аппаратную мышь"
+
+#: src/app/ui/settings/panes/input.pane.c:48
+msgid "Use plugged mouse device only when streaming. This will have better performance, but absolute mouse mode will not be enabled."
+msgstr "Использовать подключённую мышь только во время трансляции. Это даст лучшую производительность, но абсолютный режим мыши станет недоступен."
+
+#: src/app/ui/settings/panes/input.pane.c:53
+msgid "Absolute mouse mode"
+msgstr "Абсолютный режим мыши"
+
+#: src/app/ui/settings/panes/input.pane.c:55
+#: src/app/ui/settings/panes/input.pane.c:85
+msgid "Better for remote desktop. For some games, mouse will not work properly."
+msgstr "Лучше для удалённого рабочего стола. В некоторых играх мышь может некорректно работать."
+
+#: src/app/ui/settings/panes/input.pane.c:58
+msgid "Gamepad"
+msgstr "Геймпад"
+
+#: src/app/ui/settings/panes/input.pane.c:60
+msgid "Virtual mouse"
+msgstr "Виртуальная мышь"
+
+#: src/app/ui/settings/panes/input.pane.c:61
+msgid "Press LB + RT to move mouse cursor with sticks. LT/RT for left/right mouse buttons."
+msgstr "Нажмите LB + RT чтобы управлять курсором стиками. LT/RT для левой/правой кнопки мыши."
+
+#: src/app/ui/settings/panes/input.pane.c:64
+msgid "Swap ABXY buttons"
+msgstr "Поменять местами ABXY кнопки"
+
+#: src/app/ui/settings/panes/input.pane.c:65
+msgid "Swap A/B and X/Y gamepad buttons. Useful when you prefer Nintendo-like layouts."
+msgstr "Поменять местами A/B и X/Y кнопки. Полезно, если вы предпочитаете раскладку Nintendo."
+
+#: src/app/ui/settings/panes/input.pane.c:81
+msgid "Absolute mouse mode can't be used when \"Use mouse hardware\" enabled."
+msgstr "Абсолютный режим мыши не может быть использован с включённым \"Использовать аппаратную мышь\"."
+
+#: src/app/ui/settings/settings.controller.c:27
+msgid "Basic Settings"
+msgstr "Основные настройки"
+
+#: src/app/ui/settings/settings.controller.c:28
+msgid "Host Settings"
+msgstr "Настройки сервера"
+
+#: src/app/ui/settings/settings.controller.c:29
+msgid "Input Settings"
+msgstr "Настройки ввода"
+
+#: src/app/ui/settings/settings.controller.c:30
+msgid "Decoder Settings"
+msgstr "Настройки декодера"
+
+#: src/app/ui/settings/settings.controller.c:31
+msgid "About"
+msgstr "О программе"
+
+#: src/app/ui/settings/settings.controller.c:433
+msgid "Later"
+msgstr "Позже"
+
+#: src/app/ui/settings/settings.controller.c:434
+msgid "Some settings require a restart to take effect."
+msgstr "Некоторые настройки требуют перезапуска для применения."
+
+#: src/app/ui/streaming/streaming.controller.c:138
+msgid "Connecting..."
+msgstr "Подключение..."
+
+#: src/app/ui/streaming/streaming.controller.c:158
+msgid "Disconnecting..."
+msgstr "Отключение..."
+
+#: src/app/ui/streaming/streaming.controller.c:288
+msgid "Failed to start streaming"
+msgstr "Ошибка запуска трансляции"
+
+#: src/app/ui/streaming/streaming.view.c:26
+#, c-format
+msgid "Hint: %s"
+msgstr "Подсказка: %s"
+
+#: src/app/ui/streaming/streaming.view.c:51
+msgid "Soft keyboard"
+msgstr "Виртуальная клавиатура"
+
+#: src/app/ui/streaming/streaming.view.c:59
+msgid "Virtual Mouse"
+msgstr "Виртуальная мышь"
+
+#: src/app/ui/streaming/streaming.view.c:67
+msgid "Disconnect"
+msgstr "Отключиться"
+
+#: src/app/ui/streaming/streaming.view.c:75
+msgid "Quit game"
+msgstr "Выйти из игры"
+
+#: src/app/ui/streaming/streaming.view.c:90
+msgid "Performance"
+msgstr ""
+

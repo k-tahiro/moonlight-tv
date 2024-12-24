@@ -1,115 +1,170 @@
 name: Release
+run-name: "Release ${{ github.event.release.tag_name }}"
 
 on:
   release:
-    types: [created]
+    types: [ published ]
 
 env:
-  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
 
 jobs:
   release-webos:
-    # The CMake configure and build commands are platform agnostic and should work equally
-    # well on Windows or Mac.  You can convert this to a matrix build if you need
-    # cross-platform coverage.
-    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+    name: Release (webOS)
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout Source
+        uses: actions/checkout@v4
         with:
           submodules: recursive
 
-      - uses: olegtarasov/get-tag@v2.1
-        id: tagName
-
-      - uses: actions/setup-node@v2
+      - name: Download ares-cli-rs
+        uses: robinraju/release-downloader@v1.9
         with:
-          node-version: 16
-          cache: 'npm'
+          repository: "webosbrew/ares-cli-rs"
+          latest: true
+          fileName: "ares-package_*.deb"
+          out-file-path: "temp"
+
+      - name: Download Manifest Generator
+        uses: robinraju/release-downloader@v1.9
+        with:
+          repository: "webosbrew/dev-toolbox-cli"
+          latest: true
+          fileName: "webosbrew-toolbox-gen-manifest_*.deb"
+          out-file-path: "temp"
+
+      - name: Update Packages
+        run: sudo apt-get -yq update
 
       - name: Install webOS CLI
-        run: sudo npm install -g @webosose/ares-cli
-
-      - name: Install Dev Dependency
-        run: npm install
+        run: sudo apt-get install ./temp/*.deb
 
       - name: webOS Build
         uses: ./.github/actions/build-webos
         with:
-          build-type: ${{ env.BUILD_TYPE }}
+          build-type: RelWithDebInfo
 
       - name: Create Release (webOS)
         id: create_release_webos
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          name: Release ${{ steps.tagName.outputs.tag }}
+          tag: ${{ github.event.release.tag_name }}
           allowUpdates: true
           omitNameDuringUpdate: true
-          omitBodyDuringUpdate: true
+          omitBody: true
           omitPrereleaseDuringUpdate: true
-          artifacts: dist/*.ipk,dist/*.manifest.json
+          artifacts: dist/*.ipk,dist/*_dbgsym.tar.gz,dist/*.manifest.json
 
   release-raspi:
-    runs-on: ubuntu-latest
+    name: Release (Raspberry Pi ${{ matrix.arch }})
+    runs-on: ubuntu-20.04
+
+    strategy:
+      matrix:
+        arch: [ armhf, arm64 ]
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout Source
+        uses: actions/checkout@v4
         with:
           submodules: recursive
 
-      - uses: olegtarasov/get-tag@v2.1
-        id: tagName
+      - name: Update Packages
+        shell: bash
+        run: sudo apt-get -yq update
 
       - name: Prepare Sysroot
         id: pi-sysroot
-        uses: mariotaku/raspbian-sysroot-action@main
+        uses: mariotaku/raspbian-sysroot-action@v1.3
         with:
+          release: bullseye
           packages: ${{github.workspace}}/scripts/raspi/sysroot-packages.list
+          arch: ${{ matrix.arch }}
 
       - name: Install Build Tools
         shell: bash
-        # apt-get update was implicitly called, so we don't have to call it here
-        run: sudo apt-get -y -qq install crossbuild-essential-armhf cmake gettext
+        run: sudo apt-get -y -qq install crossbuild-essential-${{ matrix.arch }} cmake gettext
 
       - name: Create Build Environment
-        # Some projects don't allow in-source building, so create a separate build directory
-        # We'll use this as our working directory for all subsequent commands
         run: cmake -E make_directory ${{github.workspace}}/build
 
       - name: Configure CMake
-        # Use a bash shell so we can use the same syntax for environment variable
-        # access regardless of the host operating system
         shell: bash
         working-directory: ${{github.workspace}}/build
-        # Note the current convention is to use the -S and -B options here to specify source
-        # and build directories, but this is only available with CMake 3.13 and higher.
-        # The CMake binaries on the Github Actions machines are (as of this writing) 3.12
         run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DTARGET_RASPI=ON
           -DCMAKE_TOOLCHAIN_FILE=${{steps.pi-sysroot.outputs.cmake-toolchain}}
 
       - name: Build
         working-directory: ${{github.workspace}}/build
         shell: bash
-        # Execute the build.  You can specify a specific target with "--target <NAME>"
         run: cmake --build . --config $BUILD_TYPE
 
       - name: Package
         working-directory: ${{github.workspace}}/build
-        run: |
-          cpack
-          dpkg-scanpackages . > Release
+        run: cpack
 
       - name: Create Release (Raspberry Pi)
         id: create_release_raspi
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          name: Release ${{ steps.tagName.outputs.tag }}
+          tag: ${{ github.event.release.tag_name }}
           allowUpdates: true
           omitNameDuringUpdate: true
-          omitBodyDuringUpdate: true
+          omitBody: true
           omitPrereleaseDuringUpdate: true
-          artifacts: build/*.deb,build/Release
+          artifacts: build/*.deb
+
+  release-steamlink:
+    name: Release (Steam Link)
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Steam Link SDK
+        uses: ./.github/actions/steamlink-sdk
+        with:
+          path: .steamlink-sdk
+
+      - name: Install Build Tools
+        shell: bash
+        run: sudo apt-get -y -qq install cmake gettext
+
+      - name: Create Build Environment
+        run: cmake -E make_directory ${{github.workspace}}/build
+
+      - name: Configure CMake
+        shell: bash
+        working-directory: ${{github.workspace}}/build
+        run: |
+          source ${{github.workspace}}/.steamlink-sdk/setenv.sh
+          cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+        env:
+          CMAKE_TOOLCHAIN_FILE: ${{github.workspace}}/.steamlink-sdk/toolchain/steamlink-toolchain.cmake
+
+      - name: Build
+        working-directory: ${{github.workspace}}/build
+        shell: bash
+        run: |
+          source ${{github.workspace}}/.steamlink-sdk/setenv.sh
+          cmake --build . --config $BUILD_TYPE
+          cpack
+
+      - name: Create Release (Steam Link)
+        id: create_release_steamlink
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.event.release.tag_name }}
+          allowUpdates: true
+          omitNameDuringUpdate: true
+          omitBody: true
+          omitPrereleaseDuringUpdate: true
+          artifacts: dist/moonlight-tv_*_steamlink.*

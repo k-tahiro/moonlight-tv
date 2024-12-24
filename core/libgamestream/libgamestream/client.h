@@ -33,10 +33,15 @@ typedef struct _SERVER_DATA {
     const char *mac;
     const char *hostname;
     const char *gpuType;
+    /** HttpsPort */
+    unsigned short httpsPort;
+    /** ExternalPort */
+    unsigned short extPort;
     bool paired;
     bool supports4K;
     bool supportsHdr;
     bool unsupported;
+    bool isGfe;
     int currentGame;
     int serverMajorVersion;
     const char *gsVersion;
@@ -46,25 +51,25 @@ typedef struct _SERVER_DATA {
 
 typedef struct GS_CLIENT_T *GS_CLIENT;
 
-extern const char *gs_error;
+GS_CLIENT gs_new(const char *keydir);
 
-GS_CLIENT gs_new(const char *keydir, int log_level);
+int gs_conf_init(const char *keydir);
 
-void gs_destroy(GS_CLIENT);
+void gs_destroy(GS_CLIENT hnd);
 
-void gs_set_timeout(GS_CLIENT, int timeout);
+void gs_set_timeout(GS_CLIENT hnd, int timeout_secs);
 
-int gs_init(GS_CLIENT, PSERVER_DATA server, const char *address, bool unsupported);
+int gs_get_status(GS_CLIENT hnd, PSERVER_DATA server, const char *address, uint16_t port, bool unsupported);
 
-int gs_start_app(GS_CLIENT, PSERVER_DATA server, PSTREAM_CONFIGURATION config, int appId, bool sops, bool localaudio,
-                 int gamepad_mask);
+int gs_start_app(GS_CLIENT hnd, PSERVER_DATA server, PSTREAM_CONFIGURATION config, int appId, bool is_gfe, bool sops,
+                 bool localaudio, int gamepad_mask, const char *surround_params);
 
-int gs_applist(GS_CLIENT, const SERVER_DATA *server, PAPP_LIST *app_list);
+int gs_applist(GS_CLIENT hnd, const SERVER_DATA *server, PAPP_LIST *app_list);
 
-int gs_unpair(GS_CLIENT, PSERVER_DATA server);
+int gs_unpair(GS_CLIENT hnd, PSERVER_DATA server);
 
-int gs_pair(GS_CLIENT, PSERVER_DATA server, const char *pin);
+int gs_pair(GS_CLIENT hnd, PSERVER_DATA server, const char *pin);
 
-int gs_quit_app(GS_CLIENT, PSERVER_DATA server);
+int gs_quit_app(GS_CLIENT hnd, PSERVER_DATA server);
 
-int gs_download_cover(GS_CLIENT, const SERVER_DATA *server, int appId, const char *path);
+int gs_download_cover(GS_CLIENT hnd, const SERVER_DATA *server, int appId, const char *path);

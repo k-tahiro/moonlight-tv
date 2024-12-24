@@ -19,11 +19,13 @@
 
 #include "http.h"
 #include "errors.h"
+#include "set_error.h"
+#include "logging.h"
 
 #include <string.h>
 #include <curl/curl.h>
 #include <pthread.h>
-
+#include <stdlib.h>
 #include <assert.h>
 
 #ifdef __WIN32
@@ -34,17 +36,16 @@
 
 struct HTTP_T {
     CURL *curl;
-    int verbosity;
     pthread_mutex_t mutex;
 };
 
-static size_t _write_curl(void *contents, size_t size, size_t nmemb, void *userp) {
+static size_t write_fn(void *contents, size_t size, size_t nmemb, void *userp) {
     size_t realsize = size * nmemb;
-    PHTTP_DATA mem = (PHTTP_DATA) userp;
+    HTTP_DATA *mem = (HTTP_DATA *) userp;
 
-    mem->memory = realloc(mem->memory, mem->size + realsize + 1);
-    assert(mem->memory);
-
+    void *allocated = realloc(mem->memory, mem->size + realsize + 1);
+    assert(allocated != NULL);
+    mem->memory = allocated;
     memcpy(&(mem->memory[mem->size]), contents, realsize);
     mem->size += realsize;
     mem->memory[mem->size] = 0;
@@ -52,9 +53,12 @@ static size_t _write_curl(void *contents, size_t size, size_t nmemb, void *userp
     return realsize;
 }
 
-HTTP http_init(const char *keydir, int verbosity) {
+HTTP *http_create(const char *keydir) {
     CURL *curl = curl_easy_init();
-    assert(curl);
+    if (curl == NULL) {
+        gs_set_error(GS_ERROR, "Failed to create cURL instance");
+        return NULL;
+    }
 
     char certificateFilePath[4096];
     sprintf(certificateFilePath, "%s%c%s", keydir, PATH_SEPARATOR, CERTIFICATE_FILE_NAME);
@@ -69,51 +73,55 @@ HTTP http_init(const char *keydir, int verbosity) {
     curl_easy_setopt(curl, CURLOPT_SSLKEYTYPE, "PEM");
     curl_easy_setopt(curl, CURLOPT_SSLKEY, keyFilePath);
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, _write_curl);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_fn);
     curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
     curl_easy_setopt(curl, CURLOPT_SSL_SESSIONID_CACHE, 0L);
-    curl_easy_setopt(curl, CURLOPT_VERBOSE, verbosity >= 2 ? 1L : 0L);
+    // Fix for https://github.com/mariotaku/moonlight-tv/issues/452
+    curl_easy_setopt(curl, CURLOPT_FORBID_REUSE, 1L);
 
     struct HTTP_T *http = malloc(sizeof(struct HTTP_T));
+    assert(http != NULL);
     http->curl = curl;
-    http->verbosity = verbosity;
     pthread_mutex_init(&http->mutex, NULL);
     return http;
 }
 
-int http_request(HTTP http, char *url, PHTTP_DATA data) {
+int http_request(HTTP *http, char *url, HTTP_DATA *data) {
+    assert(http != NULL);
+    assert(data != NULL);
+    if (data->size > 0) {
+        void *allocated = realloc(data->memory, 1);
+        assert(allocated != NULL);
+        data->memory = allocated;
+        data->memory[0] = 0;
+        data->size = 0;
+    }
     pthread_mutex_lock(&http->mutex);
     CURL *curl = http->curl;
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, data);
     curl_easy_setopt(curl, CURLOPT_URL, url);
 
-    if (http->verbosity)
-        printf("Request %s\n", url);
-    int ret = GS_FAILED;
-    if (data->size > 0) {
-        free(data->memory);
-        data->memory = malloc(1);
-        if (data->memory == NULL) {
-            ret = GS_OUT_OF_MEMORY;
-            goto finish;
-        }
+    commons_log_debug("GameStream", "Request %p %s", data, url);
 
-        data->size = 0;
-    }
+    int ret = GS_FAILED;
     CURLcode res = curl_easy_perform(curl);
 
-    if (res != CURLE_OK) {
-        gs_error = curl_easy_strerror(res);
-        ret = GS_FAILED;
+    if (res == CURLE_HTTP_RETURNED_ERROR) {
+        int http_status = 0;
+        curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_status);
+        commons_log_warn("GameStream", "Request %p error HTTP %d", data, http_status);
         goto finish;
-    } else if (data->memory == NULL) {
-        ret = GS_OUT_OF_MEMORY;
+    } else if (res != CURLE_OK) {
+        const char *errmsg = curl_easy_strerror(res);
+        ret = gs_set_error(GS_IO_ERROR, "cURL error: %s", errmsg);
+        commons_log_debug("GameStream", "Request %p error %d: %s", data, ret, errmsg);
         goto finish;
     }
-    if (http->verbosity)
-        printf("Response of %s:\n", url);
-    if (http->verbosity >= 2)
-        printf("%s\n\n", data->memory);
+    assert (data->memory != NULL);
+    int http_code = 0;
+    curl_easy_getinfo(curl, CURLINFO_HTTP_CODE, &http_code);
+    commons_log_debug("GameStream", "Request %p response %d", data, http_code);
+    commons_log_hexdump(COMMONS_LOG_LEVEL_VERBOSE, "GameStream", data->memory, data->size);
 
     ret = GS_OK;
     finish:
@@ -121,32 +129,40 @@ int http_request(HTTP http, char *url, PHTTP_DATA data) {
     return ret;
 }
 
-void http_cleanup(HTTP http) {
+void http_destroy(HTTP *http) {
+    assert(http != NULL);
+    pthread_mutex_lock(&http->mutex);
     curl_easy_cleanup(http->curl);
+    pthread_mutex_unlock(&http->mutex);
+    pthread_mutex_destroy(&http->mutex);
     free((void *) http);
 }
 
-void http_set_timeout(HTTP http, int timeout) {
+void http_set_timeout(HTTP *http, int timeout) {
+    assert(http != NULL);
     pthread_mutex_lock(&http->mutex);
     curl_easy_setopt(http->curl, CURLOPT_TIMEOUT, timeout);
     pthread_mutex_unlock(&http->mutex);
 }
 
-PHTTP_DATA http_create_data() {
-    PHTTP_DATA data = malloc(sizeof(HTTP_DATA));
-    assert(data);
+HTTP_DATA *http_data_alloc() {
+    HTTP_DATA *data = malloc(sizeof(HTTP_DATA));
+    assert(data != NULL);
 
     data->memory = malloc(1);
-    assert(data->memory);
+    assert(data->memory != NULL);
     data->size = 0;
 
     return data;
 }
 
-void http_free_data(PHTTP_DATA data) {
-    if (data == NULL) return;
-    if (data->memory != NULL)
+void http_data_free(HTTP_DATA *data) {
+    if (data == NULL) {
+        return;
+    }
+    if (data->memory != NULL) {
         free(data->memory);
+    }
 
     free(data);
 }
